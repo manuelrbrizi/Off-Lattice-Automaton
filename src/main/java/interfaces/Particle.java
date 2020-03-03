@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.util.List;
+import java.util.Set;
 
 public interface Particle {
 
@@ -9,6 +10,6 @@ public interface Particle {
     double getY();
     double getRadius();
     int getId();
-    List<Particle> getNeighbours();
-    void setNeighbours(List<Particle> neighbours);
+    Set<Particle> getNeighbours();
+    void setNeighbours(Set<Particle> neighbours);
 }

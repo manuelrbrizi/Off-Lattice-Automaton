@@ -3,9 +3,9 @@ package implementations;
 import interfaces.Parser;
 import interfaces.Particle;
 
-import java.io.File;  // Import the File class
-import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.util.Scanner; // Import the Scanner class to read text files
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +43,6 @@ public class ParserImpl implements Parser {
     }
 
     public void parse() {
-
-
-
         try {
             File staticFile = new File(getClass().getClassLoader().getResource("static.txt").getFile());
             Scanner staticReader = new Scanner(staticFile);
@@ -57,7 +54,8 @@ public class ParserImpl implements Parser {
             L = staticReader.nextDouble();
             Rc = staticReader.nextDouble();
 
-            dynamicReader.nextDouble(); //Skip time
+            //Skip time
+            dynamicReader.nextDouble();
 
             int i = 0;
 
@@ -68,13 +66,7 @@ public class ParserImpl implements Parser {
             }
 
             double idealM = particles.get(0).getRadius()*2 + Rc;
-
             M = L/Math.floor(L/idealM);
-
-//            for (Particle p : particles) {
-//                System.out.println(p.getId());
-//            }
-
 
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
