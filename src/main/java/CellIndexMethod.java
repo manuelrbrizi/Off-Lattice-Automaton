@@ -1,3 +1,6 @@
+import implementations.ParserImpl;
+import interfaces.Parser;
+
 import implementations.GridImpl;
 import interfaces.Grid;
 import interfaces.Particle;
@@ -6,6 +9,9 @@ import java.util.List;
 
 public class CellIndexMethod {
     public static void main(String[] args){
+
+        Parser p = new ParserImpl();
+        p.parse();
 
     }
 

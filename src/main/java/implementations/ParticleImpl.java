@@ -18,6 +18,10 @@ public class ParticleImpl implements Particle {
         this.id = id;
     }
 
+    public ParticleImpl(){
+
+    }
+
     public double getX() {
         return x;
     }
