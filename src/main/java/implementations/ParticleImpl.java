@@ -42,7 +42,8 @@ public class ParticleImpl implements Particle {
         this.neighbours = neighbours;
     }
 
+    /* Now considering the border of the particle */
     public double calculateDistance(Particle p) {
-        return 0;
+        return Math.sqrt(Math.pow(p.getX()-getX(),2)+Math.pow(p.getY()-getY(),2)) - p.getRadius() - getRadius();
     }
 }
