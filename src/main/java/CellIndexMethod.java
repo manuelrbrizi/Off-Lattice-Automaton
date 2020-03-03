@@ -1,4 +1,5 @@
 import implementations.ParserImpl;
+import interfaces.Cell;
 import interfaces.Parser;
 
 import implementations.GridImpl;
@@ -29,4 +30,31 @@ public class CellIndexMethod {
             }
         }
     }
+
+    private void cellIndexMethod(Grid grid){
+        for(Cell c : grid.getCells()){
+            for(Particle p : c.getParticles()){
+                getNeighbours(p,c.getX(),c.getY(),grid);
+                getNeighbours(p,c.getX(),c.getY()+1,grid);
+                getNeighbours(p,c.getX()+1,c.getY()+1,grid);
+                getNeighbours(p,c.getX()+1,c.getY(),grid);
+                getNeighbours(p,c.getX()+1,c.getY()-1,grid);
+            }
+        }
+    }
+
+
+    private void getNeighbours(Particle p, double x, double y, Grid g){
+        int cellsPerRow = g.getL()/g.getM();
+        Cell c = g.getCells().get((int) (x+y*cellsPerRow));
+
+        for(Particle other : c.getParticles()){
+            if(p.calculateDistance(other)<0.5){
+                p.getNeighbours().add(other);
+                other.getNeighbours().add(p);
+            }
+        }
+
+    }
+
 }
