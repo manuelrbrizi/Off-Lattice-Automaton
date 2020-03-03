@@ -7,4 +7,5 @@ public interface Cell {
     int getY();
     List<Particle> getParticles();
     void setParticles(List<Particle> particles);
+    void addParticle(Particle p);
 }

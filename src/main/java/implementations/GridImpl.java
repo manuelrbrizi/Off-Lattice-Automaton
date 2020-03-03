@@ -3,30 +3,40 @@ package implementations;
 import interfaces.Cell;
 import interfaces.Grid;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GridImpl implements Grid {
-    private int L;
-    private int M;
+    private double L;
+    private double M;
+    private double Rc;
 
     private List<Cell> cells;
 
-    public GridImpl(int L, int M){
+    public GridImpl(double L, double M, double Rc){
         this.L = L;
         this.M = M;
-        this.cells = new LinkedList<Cell>();
+        this.Rc = Rc;
+        this.cells = new ArrayList<Cell>();
     }
 
-    public int getL() {
+    public double getL() {
         return L;
     }
 
-    public int getM() {
+    public double getM() {
         return M;
+    }
+
+    public double getRc() {
+        return Rc;
     }
 
     public List<Cell> getCells() {
         return cells;
+    }
+
+    public void setCells(List<Cell> cellList) {
+        this.cells = cellList;
     }
 }

@@ -20,6 +20,22 @@ public class ParserImpl implements Parser {
         this.particles = new ArrayList<Particle>();
     }
 
+    public List<Particle> getParticles() {
+        return particles;
+    }
+
+    public double getL() {
+        return L;
+    }
+
+    public double getM() {
+        return M;
+    }
+
+    public int getN() {
+        return N;
+    }
+
     public void parse() {
 
 

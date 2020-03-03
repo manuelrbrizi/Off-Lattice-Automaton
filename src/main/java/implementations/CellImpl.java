@@ -32,4 +32,8 @@ public class CellImpl implements Cell {
     public void setParticles(List<Particle> particles) {
         this.particles = particles;
     }
+
+    public void addParticle(Particle p){
+        particles.add(p);
+    }
 }

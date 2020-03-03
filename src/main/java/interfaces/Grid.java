@@ -3,7 +3,9 @@ package interfaces;
 import java.util.List;
 
 public interface Grid {
-     int getL();
-     int getM();
-     List<Cell> getCells();
+    void setCells(List<Cell> cellList);
+    double getRc();
+    int getL();
+    int getM();
+    List<Cell> getCells();
 }
