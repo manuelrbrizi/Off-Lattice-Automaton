@@ -41,4 +41,8 @@ public class ParticleImpl implements Particle {
     public void setNeighbours(List<Particle> neighbours) {
         this.neighbours = neighbours;
     }
+
+    public double calculateDistance(Particle p) {
+        return 0;
+    }
 }
