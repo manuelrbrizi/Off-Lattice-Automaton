@@ -7,5 +7,6 @@ public interface Parser {
     double getL();
     double getM();
     int getN();
+    double getRc();
     List<Particle> getParticles();
 }

@@ -10,11 +10,13 @@ import java.util.Scanner; // Import the Scanner class to read text files
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ParserImpl implements Parser {
     private List<Particle> particles;
     private double L;
     private double M;
     private int N;
+    private double Rc;
 
     public ParserImpl(){
         this.particles = new ArrayList<Particle>();
@@ -26,6 +28,10 @@ public class ParserImpl implements Parser {
 
     public double getL() {
         return L;
+    }
+
+    public double getRc() {
+        return Rc;
     }
 
     public double getM() {
@@ -48,7 +54,8 @@ public class ParserImpl implements Parser {
             Scanner dynamicReader = new Scanner(dynamicFile);
 
             N = staticReader.nextInt();
-            L = staticReader.nextFloat();
+            L = staticReader.nextDouble();
+            Rc = staticReader.nextDouble();
 
             dynamicReader.nextDouble(); //Skip time
 
@@ -60,9 +67,13 @@ public class ParserImpl implements Parser {
                 i++;
             }
 
-            for (Particle p : particles) {
-                System.out.println(p.getId());
-            }
+            double idealM = particles.get(0).getRadius()*2 + Rc;
+
+            M = L/Math.floor(L/idealM);
+
+//            for (Particle p : particles) {
+//                System.out.println(p.getId());
+//            }
 
 
         } catch (FileNotFoundException e) {
