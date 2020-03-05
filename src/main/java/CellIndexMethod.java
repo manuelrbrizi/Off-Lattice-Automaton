@@ -22,28 +22,24 @@ public class CellIndexMethod {
         Parser p = new ParserImpl();
         p.parse();
         Grid grid = fillGrid(p);
-        cellIndexMethod(grid);
 
-        //bruteForce(grid);
-        /*
-        for(Cell c : grid.getCells()){
-            for(Particle pa: c.getParticles()){
-                if(pa.getId() == 1) {
-                    System.out.println(1);
-                    System.out.println(calculateCellNumber(c.getX(),c.getY(), grid.getM(),grid.getL()));
-                }
-                else if(pa.getId() == 36){
-                    System.out.println(36);
-                    System.out.println(calculateCellNumber(c.getX(),c.getY(), grid.getM(),grid.getL()));
+        long start = System.currentTimeMillis();
+        //cellIndexMethod(grid);
+        bruteForce(grid);
 
-                }
-            }
-        }
-         */
+        long end = System.currentTimeMillis();
+        long elapsedTime = end - start;
+        System.out.printf("Time elapsed: %f",elapsedTime/1000.0);
+
+
        // testGridCreation(grid);
 
-        generateNeighboursFile(grid,2);
+        generateOvitoFile(grid,2);
+        generateNeighboursFile(grid);
+
     }
+
+
 
     private static Grid fillGrid(Parser parser){
         double L = parser.getL();
@@ -95,7 +91,7 @@ public class CellIndexMethod {
     private static void cellIndexMethod(Grid grid){
         for(Cell c : grid.getCells()){
             for(Particle p : c.getParticles()){
-                getPeriodicNeighbours(p,c.getX(),c.getY(),grid);
+                //getPeriodicNeighbours(p,c.getX(),c.getY(),grid);
                 getNeighbours(p,c.getX(),c.getY(),grid);
                 getNeighbours(p,c.getX(),c.getY()+1,grid);
                 getNeighbours(p,c.getX()+1,c.getY()+1,grid);
@@ -217,7 +213,7 @@ public class CellIndexMethod {
         }
     }
 
-    private static void generateNeighboursFile(Grid grid, int selectedParticle){
+    private static void generateOvitoFile(Grid grid, int selectedParticle){
         List<Particle> particles = new ArrayList<Particle>();
 
         for(Cell c : grid.getCells()){
@@ -256,7 +252,38 @@ public class CellIndexMethod {
         sb.deleteCharAt(sb.lastIndexOf("\n"));
 
         try {
-            FileWriter myWriter = new FileWriter("output.txt");
+            FileWriter myWriter = new FileWriter("outputOVITO.txt");
+            myWriter.write(sb.toString());
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void generateNeighboursFile(Grid grid) {
+
+        List<Particle> particles = new ArrayList<Particle>();
+
+        for(Cell c : grid.getCells()){
+            particles.addAll(c.getParticles());
+        }
+
+
+        StringBuilder sb = new StringBuilder();
+
+        for(Particle p : particles){
+            sb.append(String.format("%d\t->\t",p.getId()));
+            for (Particle n : p.getNeighbours()){
+                sb.append(n.getId());
+                sb.append("\t");
+            }
+            sb.append("\n");
+        }
+
+        try {
+            FileWriter myWriter = new FileWriter("outputNeighbours.txt");
             myWriter.write(sb.toString());
             myWriter.close();
         } catch (IOException e) {
