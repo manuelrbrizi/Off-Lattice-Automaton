@@ -8,7 +8,6 @@ import implementations.GridImpl;
 import interfaces.Grid;
 import interfaces.Particle;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,9 +24,8 @@ public class CellIndexMethod {
         Grid grid = fillGrid(p);
         cellIndexMethod(grid);
 
-
         //bruteForce(grid);
-
+        /*
         for(Cell c : grid.getCells()){
             for(Particle pa: c.getParticles()){
                 if(pa.getId() == 1) {
@@ -41,9 +39,10 @@ public class CellIndexMethod {
                 }
             }
         }
+         */
        // testGridCreation(grid);
 
-        generateNeighboursFile(grid,1);
+        generateNeighboursFile(grid,2);
     }
 
     private static Grid fillGrid(Parser parser){
@@ -55,19 +54,23 @@ public class CellIndexMethod {
         int xCellPosition = 0, yCellPosition = 0;
         int cellQuantity =  (int) (L/M) * (int)(L/M);
         List<Cell> cellList = new ArrayList<Cell>();
-        Cell cell;
+        Cell cell = new CellImpl(0, 0);
+        cellList.add(cell);
 
-        for(int i = 0; i < cellQuantity; i++){
-            if(i % (int)(L/M) == 0){
+        for(int i = 1; i < cellQuantity; i++){
+            int cellsPerRow = (int) (L/M);
+            if(i % cellsPerRow == 0){
                 xCellPosition = 0;
                 yCellPosition++;
                 cell = new CellImpl(xCellPosition, yCellPosition);
                 cellList.add(cell);
+                //System.out.println(String.format("Putting X = %d, Y = %d, I = %d\n", xCellPosition, yCellPosition, i));
             }
             else{
+                xCellPosition++;
                 cell = new CellImpl(xCellPosition, yCellPosition);
                 cellList.add(cell);
-                xCellPosition++;
+                //System.out.println(String.format("Putting X = %d, Y = %d, I = %d\n", xCellPosition, yCellPosition, i));
             }
         }
 
@@ -92,6 +95,7 @@ public class CellIndexMethod {
     private static void cellIndexMethod(Grid grid){
         for(Cell c : grid.getCells()){
             for(Particle p : c.getParticles()){
+                getPeriodicNeighbours(p,c.getX(),c.getY(),grid);
                 getNeighbours(p,c.getX(),c.getY(),grid);
                 getNeighbours(p,c.getX(),c.getY()+1,grid);
                 getNeighbours(p,c.getX()+1,c.getY()+1,grid);
@@ -107,16 +111,97 @@ public class CellIndexMethod {
             return;
         }
 
-        Cell c = g.getCells().get((int) (x+y*cellsPerRow));
+        //else if(x == 0 || x == cellsPerRow-1 || y == 0 || y == cellsPerRow-1){
+          //  System.out.println("Veamos periodi\n");
+            //getPeriodicNeighbours(p, x, y, g);
+        //}
 
-        for(Particle other : c.getParticles()){
-            if(p.getId() != other.getId() && p.calculateDistance(other) < g.getRc()){
+        else{
+            Cell c = g.getCells().get((int) (x+y*cellsPerRow));
+
+            for(Particle other : c.getParticles()){
+                if(p.getId() != other.getId() && p.calculateDistance(other) < g.getRc()){
+                    p.getNeighbours().add(other);
+                    other.getNeighbours().add(p);
+                }
+                //System.out.println(String.format("P1 = %d, P2 = %d, DIS = %f\n",p.getId(), other.getId(), p.calculateDistance(other)));
+            }
+        }
+    }
+
+    private static void getPeriodicNeighbours(Particle p, double x, double y, Grid g){
+        int cellsPerRow = (int) (g.getL()/g.getM());
+        int cellNumber = (int) (x+y*cellsPerRow);
+
+        /* periodicity in the bottom left */
+        if(x == 0.0 && y == 0.0){
+            //searchForNeighbours(p, g.getCells().get(cellsPerRow*(cellsPerRow-1)).getParticles(), 0, -g.getL(), g);
+            //searchForNeighbours(p, g.getCells().get(cellsPerRow*cellsPerRow-1).getParticles(), -g.getL(), -g.getL(), g);
+            //searchForNeighbours(p, g.getCells().get(cellsPerRow-1).getParticles(), -g.getL(), 0, g);
+            searchForNeighbours(p, g.getCells().get(cellsPerRow*(cellsPerRow-1)+1).getParticles(), 0, -g.getL(), g);
+        }
+
+        /* periodicity in the bottom right */
+        else if(x == cellsPerRow - 1 && y == 0.0){
+            searchForNeighbours(p, g.getCells().get(cellsPerRow*(cellsPerRow-1)).getParticles(), g.getL(), -g.getL(), g);
+            //searchForNeighbours(p, g.getCells().get(cellsPerRow*cellsPerRow-1).getParticles(), 0, -g.getL(), g);
+            searchForNeighbours(p, g.getCells().get(0).getParticles(), g.getL(), 0, g);
+            searchForNeighbours(p, g.getCells().get(cellsPerRow).getParticles(), g.getL(), 0, g);
+        }
+
+        /* periodicity in the top left */
+        else if(x == 0.0 && y == cellsPerRow - 1){
+            //searchForNeighbours(p, g.getCells().get(cellsPerRow*cellsPerRow-1).getParticles(), -g.getL(), 0, g);
+            //searchForNeighbours(p, g.getCells().get(cellsPerRow-1).getParticles(), -g.getL(), g.getL(), g);
+            searchForNeighbours(p, g.getCells().get(0).getParticles(), 0, -g.getL(), g);
+            searchForNeighbours(p, g.getCells().get(0).getParticles(), cellNumber-(cellsPerRow*(cellsPerRow-1)+1), -g.getL(), g);
+        }
+
+        /* periodicity in the top right */
+        else if(x == cellsPerRow - 1 && y == cellsPerRow - 1){
+            searchForNeighbours(p, g.getCells().get(cellsPerRow*(cellsPerRow-1)).getParticles(), g.getL(), 0, g);
+            searchForNeighbours(p, g.getCells().get(cellsPerRow-1).getParticles(), 0, g.getL(), g);
+            searchForNeighbours(p, g.getCells().get(0).getParticles(), g.getL(), g.getL(), g);
+            searchForNeighbours(p, g.getCells().get(cellsPerRow).getParticles(), g.getL(), 0, g);
+        }
+
+        /* periodicity in the left */
+        //else if(x == 0.0){
+            //searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)).getParticles(), -g.getL(), 0, g);
+            //searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)+cellsPerRow).getParticles(), -g.getL(), 0, g);
+            //searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)-cellsPerRow).getParticles(), -g.getL(), 0, g);
+        //}
+
+        /* periodicity in the right */
+        else if(x == cellsPerRow-1){
+            searchForNeighbours(p, g.getCells().get(cellNumber-(cellsPerRow-1)).getParticles(), g.getL(), 0, g);
+            searchForNeighbours(p, g.getCells().get(cellNumber-(cellsPerRow-1)+cellsPerRow).getParticles(), g.getL(), 0, g);
+            searchForNeighbours(p, g.getCells().get(cellNumber-(cellsPerRow-1)-cellsPerRow).getParticles(), g.getL(), 0, g);
+        }
+
+        /* periodicity in the bottom */
+        else if(y == 0.0){
+            //searchForNeighbours(p, g.getCells().get(cellNumber+cellsPerRow*(cellsPerRow-1)).getParticles(), 0, -g.getL(), g);
+            //searchForNeighbours(p, g.getCells().get(cellNumber+cellsPerRow*(cellsPerRow-1)-1).getParticles(), 0, -g.getL(), g);
+            searchForNeighbours(p, g.getCells().get(cellNumber+cellsPerRow*(cellsPerRow-1)+1).getParticles(), 0, -g.getL(), g);
+        }
+
+        /* periodicity in the top */
+        else if(y == cellsPerRow-1){
+            searchForNeighbours(p, g.getCells().get(cellNumber-cellsPerRow*(cellsPerRow-1)).getParticles(), 0, g.getL(), g);
+            //searchForNeighbours(p, g.getCells().get(cellNumber-cellsPerRow*(cellsPerRow-1)-1).getParticles(), 0, g.getL(), g);
+            searchForNeighbours(p, g.getCells().get(cellNumber-cellsPerRow*(cellsPerRow-1)+1).getParticles(), 0, g.getL(), g);
+        }
+    }
+
+    private static void searchForNeighbours(Particle p, List<Particle> particleList, double newX, double newY, Grid g){
+        int cellsPerRow = (int) (g.getL()/g.getM());
+        for(Particle other : particleList){
+            if(p.calculateDistance(other.getX()+newX, other.getY()+newY, other.getRadius()) < g.getRc()){
                 p.getNeighbours().add(other);
                 other.getNeighbours().add(p);
             }
-            //System.out.println(String.format("P1 = %d, P2 = %d, DIS = %f\n",p.getId(), other.getId(), p.calculateDistance(other)));
         }
-
     }
 
     private static void testGridCreation(Grid grid){

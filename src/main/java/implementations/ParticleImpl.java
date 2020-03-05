@@ -3,7 +3,6 @@ package implementations;
 import interfaces.Particle;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ParticleImpl implements Particle {
@@ -50,6 +49,11 @@ public class ParticleImpl implements Particle {
     /* Now considering the border of the particle */
     public double calculateDistance(Particle p) {
         double toReturn = Math.sqrt(Math.pow(p.getX()-getX(),2) + Math.pow(p.getY()-getY(),2)) - p.getRadius() - getRadius();
+        return toReturn < 0 ? 0 : toReturn;
+    }
+
+    public double calculateDistance(double newX, double newY, double radius){
+        double toReturn = Math.sqrt(Math.pow(newX-getX(),2) + Math.pow(newY-getY(),2)) - radius - getRadius();
         return toReturn < 0 ? 0 : toReturn;
     }
 }

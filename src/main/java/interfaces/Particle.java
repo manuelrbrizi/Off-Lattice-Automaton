@@ -6,6 +6,7 @@ import java.util.Set;
 public interface Particle {
 
     double calculateDistance(Particle p);
+    double calculateDistance(double newX, double newY, double radius);
     double getX();
     double getY();
     double getRadius();
