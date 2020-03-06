@@ -17,7 +17,7 @@ import java.util.Random;
 public class CellIndexMethod {
     public static void main(String[] args){
 
-       // generateFiles(50,3,0.25,0.5);
+        //generateFiles(500,20,0.25,1);
 
         Parser p = new ParserImpl();
         p.parse();
@@ -25,7 +25,7 @@ public class CellIndexMethod {
 
         long start = System.currentTimeMillis();
         //cellIndexMethod(grid);
-        bruteForce(grid);
+        bruteForce(grid, true);
 
         long end = System.currentTimeMillis();
         long elapsedTime = end - start;
@@ -34,7 +34,7 @@ public class CellIndexMethod {
 
        // testGridCreation(grid);
 
-        generateOvitoFile(grid,2);
+        generateOvitoFile(grid,125);
         generateNeighboursFile(grid);
 
     }
@@ -191,7 +191,6 @@ public class CellIndexMethod {
     }
 
     private static void searchForNeighbours(Particle p, List<Particle> particleList, double newX, double newY, Grid g){
-        int cellsPerRow = (int) (g.getL()/g.getM());
         for(Particle other : particleList){
             if(p.calculateDistance(other.getX()+newX, other.getY()+newY, other.getRadius()) < g.getRc()){
                 p.getNeighbours().add(other);
@@ -294,15 +293,21 @@ public class CellIndexMethod {
     }
 
 
-    private static void bruteForce(Grid grid){
+    private static void bruteForce(Grid grid, boolean hasPeriodicity){
         List<Particle> particles = new ArrayList<Particle>();
 
         for(Cell c : grid.getCells()){
             particles.addAll(c.getParticles());
         }
 
+
+
         for(Particle p : particles){
             for(Particle other : particles){
+                if(hasPeriodicity){
+                    getPeriodicNeighbours(p, Math.floor(p.getX()/ grid.getM()), Math.floor(p.getY()/ grid.getM()), grid);
+                }
+
                 if(p.getId() != other.getId() && p.calculateDistance(other)<grid.getRc() && !p.getNeighbours().contains(other)){
                     p.getNeighbours().add(other);
                     other.getNeighbours().add(p);
