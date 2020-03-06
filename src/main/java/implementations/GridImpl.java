@@ -39,4 +39,8 @@ public class GridImpl implements Grid {
     public void setCells(List<Cell> cellList) {
         this.cells = cellList;
     }
+
+    public void setM(double newm){
+        this.M = newm;
+    }
 }

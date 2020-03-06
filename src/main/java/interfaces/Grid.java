@@ -7,5 +7,7 @@ public interface Grid {
     double getRc();
     double getL();
     double getM();
+
+    void setM(double newm);
     List<Cell> getCells();
 }

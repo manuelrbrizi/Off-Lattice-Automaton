@@ -8,34 +8,85 @@ import implementations.GridImpl;
 import interfaces.Grid;
 import interfaces.Particle;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class CellIndexMethod {
     public static void main(String[] args){
+//        System.out.println("N\t\t\tCMI\t\t\tBF\t\t\t\n");
+//
+//        for(int i = 50;i<=5000;i+=50){
+//            for(int j = 0;j<5;j++){
+//                System.out.printf("%d\t\t\t",i);
+//                generateFiles(i,20,0.25,1);
+//                Parser p = new ParserImpl();
+//                p.parse();
+//                Grid grid = fillGrid(p);
+//
+//                long start = System.nanoTime();
+//                cellIndexMethod(grid);
+//                //bruteForce(grid);
+//                long end = System.nanoTime();
+//                long elapsedTime = end - start;
+//                System.out.printf("%d\t\t\t",elapsedTime);
+//
+//                start = System.nanoTime();
+//                //cellIndexMethod(grid);
+//                bruteForce(grid,true);
+//                end = System.nanoTime();
+//                elapsedTime = end - start;
+//                System.out.printf("%d\t\t\t\n",elapsedTime);
+//
+//            }
+//        }
 
-        //generateFiles(500,20,0.25,1);
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Ingrese 1 para CIM o 2 para BF");
+        boolean cim = scanner.nextInt() == 1;
+
+        System.out.println("Ingrese 1 para no periodico o 2 para periodico");
+        boolean periodic = scanner.nextInt() == 2;
+
+        System.out.println("Ingrese que valor de M quiere usar o 0 para usar el calculado");
+        double userm = scanner.nextDouble();
+
+
 
         Parser p = new ParserImpl();
         p.parse();
         Grid grid = fillGrid(p);
 
-        long start = System.currentTimeMillis();
-        //cellIndexMethod(grid);
-        bruteForce(grid, true);
+        if(userm != 0){
+            grid.setM(userm);
+        }
 
-        long end = System.currentTimeMillis();
-        long elapsedTime = end - start;
-        System.out.printf("Time elapsed: %f",elapsedTime/1000.0);
+        long start = System.nanoTime();
+        if(cim){
+            cellIndexMethod(grid,periodic);
+
+        }
+        else{
+            bruteForce(grid,periodic);
+
+        }
+                long end = System.nanoTime();
+                long elapsedTime = end - start;
+                System.out.printf("Elapsed time: %dms",elapsedTime/1000000);
+
+
+
 
 
        // testGridCreation(grid);
 
-        generateOvitoFile(grid,125);
-        generateNeighboursFile(grid);
+        //generateOvitoFile(grid,111);
+        //generateNeighboursFile(grid);
 
     }
 
@@ -88,10 +139,12 @@ public class CellIndexMethod {
         return (int) (Math.min(Math.floor(x/M), (L/M)-1) + (int)(L/M) * Math.min(Math.floor(y/M), (L/M)-1));
     }
 
-    private static void cellIndexMethod(Grid grid){
+    private static void cellIndexMethod(Grid grid, boolean periodic){
         for(Cell c : grid.getCells()){
             for(Particle p : c.getParticles()){
-                //getPeriodicNeighbours(p,c.getX(),c.getY(),grid);
+                if(periodic){
+                    getPeriodicNeighbours(p,c.getX(),c.getY(),grid);
+                }
                 getNeighbours(p,c.getX(),c.getY(),grid);
                 getNeighbours(p,c.getX(),c.getY()+1,grid);
                 getNeighbours(p,c.getX()+1,c.getY()+1,grid);
@@ -336,6 +389,9 @@ public class CellIndexMethod {
         }
 
         try {
+//            File staticFile = new File(CellIndexMethod.class.getClassLoader().getResource("static.txt").getFile());
+//            FileWriter myWriter = new FileWriter(staticFile);
+
             FileWriter myWriter = new FileWriter("static.txt");
             myWriter.write(sb.toString());
             myWriter.close();
@@ -357,6 +413,9 @@ public class CellIndexMethod {
         }
 
         try {
+
+//            File dynamicFile = new File(CellIndexMethod.class.getClassLoader().getResource("dynamic.txt").getFile());
+//            FileWriter myWriter = new FileWriter(dynamicFile);
             FileWriter myWriter = new FileWriter("dynamic.txt");
             myWriter.write(sb.toString());
             myWriter.close();
