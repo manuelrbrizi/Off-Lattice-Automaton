@@ -47,6 +47,22 @@ public class CellIndexMethod {
 
         Scanner scanner = new Scanner(System.in);
 
+        System.out.println("Ingrese 1 si quiere generar un nuevo set de archivos o 2 para continuar");
+        int files = scanner.nextInt();
+        if(files == 1){
+            double L,R,Rc;
+            int N;
+            System.out.println("Ingrese el valor de L");
+            L = scanner.nextDouble();
+            System.out.println("Ingrese el valor de R");
+            R = scanner.nextDouble();
+            System.out.println("Ingrese el valor de Rc");
+            Rc = scanner.nextDouble();
+            System.out.println("Ingrese el valor de N");
+            N = scanner.nextInt();
+            generateFiles(N,L,R,Rc);
+        }
+
         System.out.println("Ingrese 1 para CIM o 2 para BF");
         boolean cim = scanner.nextInt() == 1;
 
@@ -60,33 +76,38 @@ public class CellIndexMethod {
 
         Parser p = new ParserImpl();
         p.parse();
+        if(userm > 0){
+            p.setM(userm);
+            System.out.printf("El M se ha setteado en %f\n",p.getM());
+        }
+        else {
+            System.out.printf("El M calculado es %f\n",p.getM());
+        }
+        
         Grid grid = fillGrid(p);
 
-        if(userm != 0){
-            grid.setM(userm);
-        }
+
 
         long start = System.nanoTime();
         if(cim){
             cellIndexMethod(grid,periodic);
-
         }
         else{
             bruteForce(grid,periodic);
-
         }
-                long end = System.nanoTime();
-                long elapsedTime = end - start;
-                System.out.printf("Elapsed time: %dms",elapsedTime/1000000);
+        long end = System.nanoTime();
+        long elapsedTime = end - start;
+        System.out.printf("Elapsed time: %dms\n",elapsedTime/1000000);
 
-
+        System.out.println("Ingrese el ID de la particula distinguida");
+        int selected = scanner.nextInt();
 
 
 
        // testGridCreation(grid);
 
-        //generateOvitoFile(grid,111);
-        //generateNeighboursFile(grid);
+        generateOvitoFile(grid,selected);
+        generateNeighboursFile(grid);
 
     }
 
@@ -145,6 +166,9 @@ public class CellIndexMethod {
                 if(periodic){
                     getPeriodicNeighbours(p,c.getX(),c.getY(),grid);
                 }
+                if (p.getId() == 10){
+                    System.out.printf("X:%d Y:%d",c.getX(),c.getY());
+                }
                 getNeighbours(p,c.getX(),c.getY(),grid);
                 getNeighbours(p,c.getX(),c.getY()+1,grid);
                 getNeighbours(p,c.getX()+1,c.getY()+1,grid);
@@ -160,16 +184,17 @@ public class CellIndexMethod {
             return;
         }
 
-        //else if(x == 0 || x == cellsPerRow-1 || y == 0 || y == cellsPerRow-1){
-          //  System.out.println("Veamos periodi\n");
-            //getPeriodicNeighbours(p, x, y, g);
-        //}
-
         else{
-            Cell c = g.getCells().get((int) (x+y*cellsPerRow));
+            int celln = calculateCellNumber(x,y,g.getM(),g.getL());
+            Cell c = g.getCells().get(calculateCellNumber(x,y,g.getM(),g.getL()));
+            if(p.getId() == 10)
 
+                System.out.printf("ESTAMOS EN LA CELDA %d buscando en la celda %d X:%f Y:%f",calculateCellNumber(c.getX(),c.getY(),g.getM(),g.getL()),celln,p.getX(),p.getY());
             for(Particle other : c.getParticles()){
                 if(p.getId() != other.getId() && p.calculateDistance(other) < g.getRc()){
+                    if(p.getId() == 10 && other.getId() == 4){
+                        System.out.printf("DISTANCIA:%f\n",p.calculateDistance(other));
+                    }
                     p.getNeighbours().add(other);
                     other.getNeighbours().add(p);
                 }

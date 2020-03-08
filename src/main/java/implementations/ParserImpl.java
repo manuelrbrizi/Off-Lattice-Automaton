@@ -42,6 +42,10 @@ public class ParserImpl implements Parser {
         return N;
     }
 
+    public void setM(double m) {
+        M = m;
+    }
+
     public void parse() {
         try {
 //            File staticFile = new File(getClass().getClassLoader().getResource("static.txt").getFile());
