@@ -166,9 +166,6 @@ public class CellIndexMethod {
                 if(periodic){
                     getPeriodicNeighbours(p,c.getX(),c.getY(),grid);
                 }
-                if (p.getId() == 10){
-                    System.out.printf("X:%d Y:%d",c.getX(),c.getY());
-                }
                 getNeighbours(p,c.getX(),c.getY(),grid);
                 getNeighbours(p,c.getX(),c.getY()+1,grid);
                 getNeighbours(p,c.getX()+1,c.getY()+1,grid);
@@ -190,13 +187,9 @@ public class CellIndexMethod {
 
             for(Particle other : c.getParticles()){
                 if(p.getId() != other.getId() && p.calculateDistance(other) < g.getRc()){
-                    if(p.getId() == 10 && other.getId() == 4){
-                        System.out.printf("DISTANCIA:%f\n",p.calculateDistance(other));
-                    }
                     p.getNeighbours().add(other);
                     other.getNeighbours().add(p);
                 }
-                //System.out.println(String.format("P1 = %d, P2 = %d, DIS = %f\n",p.getId(), other.getId(), p.calculateDistance(other)));
             }
         }
     }
