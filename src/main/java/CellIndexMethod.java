@@ -185,11 +185,9 @@ public class CellIndexMethod {
         }
 
         else{
-            int celln = calculateCellNumber(x,y,g.getM(),g.getL());
-            Cell c = g.getCells().get(calculateCellNumber(x,y,g.getM(),g.getL()));
-            if(p.getId() == 10)
+            Cell c = g.getCells().get((int)(x+y*cellsPerRow));
 
-                System.out.printf("ESTAMOS EN LA CELDA %d buscando en la celda %d X:%f Y:%f",calculateCellNumber(c.getX(),c.getY(),g.getM(),g.getL()),celln,p.getX(),p.getY());
+
             for(Particle other : c.getParticles()){
                 if(p.getId() != other.getId() && p.calculateDistance(other) < g.getRc()){
                     if(p.getId() == 10 && other.getId() == 4){
