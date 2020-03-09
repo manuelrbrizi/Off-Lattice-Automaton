@@ -77,7 +77,8 @@ public class CellIndexMethod {
         Parser p = new ParserImpl();
         p.parse();
         if(userm > 0){
-            p.setM(userm);
+
+            p.setM(p.getL()/Math.floor(p.getL()/userm));
             System.out.printf("El M se ha setteado en %f\n",p.getM());
         }
         else {
@@ -138,7 +139,6 @@ public class CellIndexMethod {
                 xCellPosition++;
                 cell = new CellImpl(xCellPosition, yCellPosition);
                 cellList.add(cell);
-                //System.out.println(String.format("Putting X = %d, Y = %d, I = %d\n", xCellPosition, yCellPosition, i));
             }
         }
 
