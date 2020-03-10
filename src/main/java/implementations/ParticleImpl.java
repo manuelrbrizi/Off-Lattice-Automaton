@@ -20,8 +20,6 @@ public class ParticleImpl implements Particle {
         this.neighbours = new HashSet<Particle>();
     }
 
-    public ParticleImpl(){}
-
     public double getX() {
         return x;
     }

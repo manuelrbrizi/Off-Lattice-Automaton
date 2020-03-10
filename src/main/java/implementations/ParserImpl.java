@@ -48,12 +48,9 @@ public class ParserImpl implements Parser {
 
     public void parse() {
         try {
-//            File staticFile = new File(getClass().getClassLoader().getResource("static.txt").getFile());
-        File staticFile = new File("static.txt");
 
-        Scanner staticReader = new Scanner(staticFile);
-
-//            File dynamicFile = new File(getClass().getClassLoader().getResource("dynamic.txt").getFile());
+            File staticFile = new File("static.txt");
+            Scanner staticReader = new Scanner(staticFile);
             File dynamicFile = new File("dynamic.txt");
 
             Scanner dynamicReader = new Scanner(dynamicFile);
@@ -82,6 +79,4 @@ public class ParserImpl implements Parser {
         }
 
     }
-
-
 }

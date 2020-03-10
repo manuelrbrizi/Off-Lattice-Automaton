@@ -8,109 +8,21 @@ import implementations.GridImpl;
 import interfaces.Grid;
 import interfaces.Particle;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 public class CellIndexMethod {
     public static void main(String[] args){
-//        System.out.println("N\t\t\tCMI\t\t\tBF\t\t\t\n");
-//
-//        for(int i = 50;i<=5000;i+=50){
-//            for(int j = 0;j<5;j++){
-//                System.out.printf("%d\t\t\t",i);
-//                generateFiles(i,20,0.25,1);
-//                Parser p = new ParserImpl();
-//                p.parse();
-//                Grid grid = fillGrid(p);
-//
-//                long start = System.nanoTime();
-//                cellIndexMethod(grid);
-//                //bruteForce(grid);
-//                long end = System.nanoTime();
-//                long elapsedTime = end - start;
-//                System.out.printf("%d\t\t\t",elapsedTime);
-//
-//                start = System.nanoTime();
-//                //cellIndexMethod(grid);
-//                bruteForce(grid,true);
-//                end = System.nanoTime();
-//                elapsedTime = end - start;
-//                System.out.printf("%d\t\t\t\n",elapsedTime);
-//
-//            }
-//        }
-
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Ingrese 1 si quiere generar un nuevo set de archivos o 2 para continuar");
-        int files = scanner.nextInt();
-        if(files == 1){
-            double L,R,Rc;
-            int N;
-            System.out.println("Ingrese el valor de L");
-            L = scanner.nextDouble();
-            System.out.println("Ingrese el valor de R");
-            R = scanner.nextDouble();
-            System.out.println("Ingrese el valor de Rc");
-            Rc = scanner.nextDouble();
-            System.out.println("Ingrese el valor de N");
-            N = scanner.nextInt();
-            generateFiles(N,L,R,Rc);
-        }
-
-        System.out.println("Ingrese 1 para CIM o 2 para BF");
-        boolean cim = scanner.nextInt() == 1;
-
-        System.out.println("Ingrese 1 para no periodico o 2 para periodico");
-        boolean periodic = scanner.nextInt() == 2;
-
-        System.out.println("Ingrese que valor de M quiere usar o 0 para usar el calculado");
-        double userm = scanner.nextDouble();
-
-
-
         Parser p = new ParserImpl();
-        p.parse();
-        if(userm > 0){
-
-            p.setM(p.getL()/Math.floor(p.getL()/userm));
-            System.out.printf("El M se ha setteado en %f\n",p.getM());
-        }
-        else {
-            System.out.printf("El M calculado es %f\n",p.getM());
-        }
-        
         Grid grid = fillGrid(p);
+        CIM(grid);
 
-
-
-        long start = System.nanoTime();
-        if(cim){
-            //cellIndexMethod(grid,periodic);
-            CIM(grid,periodic);
-        }
-        else{
-            bruteForce(grid,periodic);
-        }
-        long end = System.nanoTime();
-        long elapsedTime = end - start;
-        System.out.printf("Elapsed time: %dms\n",elapsedTime/1000000);
-
-        System.out.println("Ingrese el ID de la particula distinguida");
-        int selected = scanner.nextInt();
-
-
-
-       // testGridCreation(grid);
-
-        generateOvitoFile(grid,selected);
-        generateNeighboursFile(grid);
-
+        // testGridCreation(grid);
+        //generateOvitoFile(grid);
+        //generateNeighboursFile(grid);
     }
 
 
@@ -150,6 +62,9 @@ public class CellIndexMethod {
         for(int i = 0; i < N; i++){
             p = particles.get(i);
             cellNumber = calculateCellNumber(p.getX(), p.getY(), M, L);
+            if(cellNumber == 172){
+                System.out.printf("x/M = %f, y/M = %f, L/M = %f, (int)L/M = %d\n", p.getX()/M, p.getY()/M, L/M, (int)(L/M));
+            }
             cellList.get(cellNumber).addParticle(p);
         }
 
@@ -177,52 +92,38 @@ public class CellIndexMethod {
     }
 
 
-    private static void CIM(Grid grid, boolean periodic){
+    private static void CIM(Grid grid){
         for(Cell c : grid.getCells()){
             for(Particle p : c.getParticles()){
-                getNeighbours2(p,c.getX(),c.getY(),grid,periodic);
-                getNeighbours2(p,c.getX(),c.getY()+1,grid,periodic);
-                getNeighbours2(p,c.getX()+1,c.getY()+1,grid,periodic);
-                getNeighbours2(p,c.getX()+1,c.getY(),grid,periodic);
-                getNeighbours2(p,c.getX()+1,c.getY()-1,grid,periodic);
+                getNeighbours2(p,c.getX(),c.getY(),grid);
+                getNeighbours2(p,c.getX(),c.getY()+1,grid);
+                getNeighbours2(p,c.getX()+1,c.getY()+1,grid);
+                getNeighbours2(p,c.getX()+1,c.getY(),grid);
+                getNeighbours2(p,c.getX()+1,c.getY()-1,grid);
             }
         }
     }
 
-    private static void getNeighbours2(Particle p, int x, int y, Grid grid, boolean periodic) {
+    private static void getNeighbours2(Particle p, int x, int y, Grid grid) {
         int cellsPerRow = (int) (grid.getL()/grid.getM());
-        if(periodic){
-            if(y==cellsPerRow){
-                y = 0;
-            }
-            else if(y==-1){
-                y += cellsPerRow;
-            }
-            if(x == cellsPerRow){
-                x = 0;
-            }
+
+        if(y==cellsPerRow){
+            y = 0;
         }
-        else{
-            if(x < 0 || x >= cellsPerRow || y < 0 || y >= cellsPerRow){
-                return;
-            }
+        else if(y==-1){
+            y += cellsPerRow;
+        }
+
+        if(x == cellsPerRow){
+            x = 0;
         }
 
         Cell c = grid.getCells().get((int)(x+y*cellsPerRow));
 
-
         for(Particle other : c.getParticles()){
-            if(!periodic){
-                if(p.getId() != other.getId() && p.calculateDistance(other) < grid.getRc()){
-                    p.getNeighbours().add(other);
-                    other.getNeighbours().add(p);
-                }
-            }
-            else{
-                if(p.getId() != other.getId() && p.calculatePeriodicDistance(other,grid.getL()) < grid.getRc()){
-                    p.getNeighbours().add(other);
-                    other.getNeighbours().add(p);
-                }
+            if(p.getId() != other.getId() && p.calculatePeriodicDistance(other,grid.getL()) < grid.getRc()){
+                p.getNeighbours().add(other);
+                other.getNeighbours().add(p);
             }
         }
     }
@@ -342,7 +243,10 @@ public class CellIndexMethod {
         }
     }
 
-    private static void generateOvitoFile(Grid grid, int selectedParticle){
+    //PREVIOUS METHODS. WILL BE DELETED SOON
+
+    /*
+    private static void generateOvitoFile(Grid grid){
         List<Particle> particles = new ArrayList<Particle>();
 
         for(Cell c : grid.getCells()){
@@ -421,31 +325,7 @@ public class CellIndexMethod {
         }
 
     }
-
-
-    private static void bruteForce(Grid grid, boolean hasPeriodicity){
-        List<Particle> particles = new ArrayList<Particle>();
-
-        for(Cell c : grid.getCells()){
-            particles.addAll(c.getParticles());
-        }
-
-
-
-        for(Particle p : particles){
-            for(Particle other : particles){
-                if(hasPeriodicity){
-                    getPeriodicNeighbours(p, Math.floor(p.getX()/ grid.getM()), Math.floor(p.getY()/ grid.getM()), grid);
-                }
-
-                if(p.getId() != other.getId() && p.calculateDistance(other)<grid.getRc() && !p.getNeighbours().contains(other)){
-                    p.getNeighbours().add(other);
-                    other.getNeighbours().add(p);
-                }
-            }
-        }
-    }
-
+     */
 
     private static void generateFiles(int quantity, double L, double r, double Rc){
         createStaticFile(quantity,L,r,Rc);
@@ -466,9 +346,6 @@ public class CellIndexMethod {
         }
 
         try {
-//            File staticFile = new File(CellIndexMethod.class.getClassLoader().getResource("static.txt").getFile());
-//            FileWriter myWriter = new FileWriter(staticFile);
-
             FileWriter myWriter = new FileWriter("static.txt");
             myWriter.write(sb.toString());
             myWriter.close();
@@ -477,6 +354,7 @@ public class CellIndexMethod {
             e.printStackTrace();
         }
     }
+
     private static void createDynamicFile(int quantity, double max){
         StringBuilder sb = new StringBuilder();
         sb.append("10\n");
@@ -490,9 +368,6 @@ public class CellIndexMethod {
         }
 
         try {
-
-//            File dynamicFile = new File(CellIndexMethod.class.getClassLoader().getResource("dynamic.txt").getFile());
-//            FileWriter myWriter = new FileWriter(dynamicFile);
             FileWriter myWriter = new FileWriter("dynamic.txt");
             myWriter.write(sb.toString());
             myWriter.close();
