@@ -91,7 +91,8 @@ public class CellIndexMethod {
 
         long start = System.nanoTime();
         if(cim){
-            cellIndexMethod(grid,periodic);
+            //cellIndexMethod(grid,periodic);
+            CIM(grid,periodic);
         }
         else{
             bruteForce(grid,periodic);
@@ -175,6 +176,57 @@ public class CellIndexMethod {
         }
     }
 
+
+    private static void CIM(Grid grid, boolean periodic){
+        for(Cell c : grid.getCells()){
+            for(Particle p : c.getParticles()){
+                getNeighbours2(p,c.getX(),c.getY(),grid,periodic);
+                getNeighbours2(p,c.getX(),c.getY()+1,grid,periodic);
+                getNeighbours2(p,c.getX()+1,c.getY()+1,grid,periodic);
+                getNeighbours2(p,c.getX()+1,c.getY(),grid,periodic);
+                getNeighbours2(p,c.getX()+1,c.getY()-1,grid,periodic);
+            }
+        }
+    }
+
+    private static void getNeighbours2(Particle p, int x, int y, Grid grid, boolean periodic) {
+        int cellsPerRow = (int) (grid.getL()/grid.getM());
+        if(periodic){
+            if(y==cellsPerRow){
+                y = 0;
+            }
+            else if(y==-1){
+                y += cellsPerRow;
+            }
+            if(x == cellsPerRow){
+                x = 0;
+            }
+        }
+        else{
+            if(x < 0 || x >= cellsPerRow || y < 0 || y >= cellsPerRow){
+                return;
+            }
+        }
+
+        Cell c = grid.getCells().get((int)(x+y*cellsPerRow));
+
+
+        for(Particle other : c.getParticles()){
+            if(!periodic){
+                if(p.getId() != other.getId() && p.calculateDistance(other) < grid.getRc()){
+                    p.getNeighbours().add(other);
+                    other.getNeighbours().add(p);
+                }
+            }
+            else{
+                if(p.getId() != other.getId() && p.calculatePeriodicDistance(other,grid.getL()) < grid.getRc()){
+                    p.getNeighbours().add(other);
+                    other.getNeighbours().add(p);
+                }
+            }
+        }
+    }
+
     private static void getNeighbours(Particle p, double x, double y, Grid g){
         int cellsPerRow = (int) (g.getL()/g.getM());
         if(x < 0 || x >= cellsPerRow || y < 0 || y >= cellsPerRow){
@@ -194,6 +246,10 @@ public class CellIndexMethod {
         }
     }
 
+
+
+
+
     private static void getPeriodicNeighbours(Particle p, double x, double y, Grid g){
         int cellsPerRow = (int) (g.getL()/g.getM());
         int cellNumber = (int) (x+y*cellsPerRow);
@@ -203,7 +259,12 @@ public class CellIndexMethod {
             //searchForNeighbours(p, g.getCells().get(cellsPerRow*(cellsPerRow-1)).getParticles(), 0, -g.getL(), g);
             //searchForNeighbours(p, g.getCells().get(cellsPerRow*cellsPerRow-1).getParticles(), -g.getL(), -g.getL(), g);
             //searchForNeighbours(p, g.getCells().get(cellsPerRow-1).getParticles(), -g.getL(), 0, g);
-            searchForNeighbours(p, g.getCells().get(cellsPerRow*(cellsPerRow-1)+1).getParticles(), 0, -g.getL(), g);
+            if(cellsPerRow == 1){
+                searchForNeighbours(p, g.getCells().get(cellsPerRow*(cellsPerRow-1)).getParticles(), 0, -g.getL(), g);
+            }
+            else{
+                searchForNeighbours(p, g.getCells().get(cellsPerRow*(cellsPerRow-1)+1).getParticles(), 0, -g.getL(), g);
+            }
         }
 
         /* periodicity in the bottom right */
@@ -218,7 +279,7 @@ public class CellIndexMethod {
         else if(x == 0.0 && y == cellsPerRow - 1){
             //searchForNeighbours(p, g.getCells().get(cellsPerRow*cellsPerRow-1).getParticles(), -g.getL(), 0, g);
             //searchForNeighbours(p, g.getCells().get(cellsPerRow-1).getParticles(), -g.getL(), g.getL(), g);
-            searchForNeighbours(p, g.getCells().get(0).getParticles(), 0, -g.getL(), g);
+            searchForNeighbours(p, g.getCells().get(0).getParticles(), 0, g.getL(), g);
             searchForNeighbours(p, g.getCells().get(0).getParticles(), cellNumber-(cellsPerRow*(cellsPerRow-1)+1), -g.getL(), g);
         }
 
@@ -231,11 +292,11 @@ public class CellIndexMethod {
         }
 
         /* periodicity in the left */
-        //else if(x == 0.0){
-            //searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)).getParticles(), -g.getL(), 0, g);
-            //searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)+cellsPerRow).getParticles(), -g.getL(), 0, g);
-            //searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)-cellsPerRow).getParticles(), -g.getL(), 0, g);
-        //}
+//        else if(x == 0.0){
+//            searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)).getParticles(), -g.getL(), 0, g);
+//            searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)+cellsPerRow).getParticles(), -g.getL(), 0, g);
+//            searchForNeighbours(p, g.getCells().get(cellNumber+(cellsPerRow-1)-cellsPerRow).getParticles(), -g.getL(), 0, g);
+//        }
 
         /* periodicity in the right */
         else if(x == cellsPerRow-1){

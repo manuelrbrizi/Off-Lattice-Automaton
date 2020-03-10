@@ -56,4 +56,18 @@ public class ParticleImpl implements Particle {
         double toReturn = Math.sqrt(Math.pow(newX-getX(),2) + Math.pow(newY-getY(),2)) - radius - getRadius();
         return toReturn < 0 ? 0 : toReturn;
     }
+
+    public double calculatePeriodicDistance(Particle other,double L){
+        double distance;
+        double xdist = Math.abs(getX()-other.getX());
+        double ydist = Math.abs(getY()-other.getY());
+        if(xdist > L/2){
+            xdist = L-xdist;
+        }
+        if(ydist >L/2){
+            ydist = L-ydist;
+        }
+
+        return Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2)) - other.getRadius() - getRadius();
+    }
 }
