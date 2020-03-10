@@ -1,3 +1,6 @@
-# Cell index method
+# Off Lattice Automaton
 
-Implementation of cell index method to detect neighbouring particles
+Authors:
+
+Bergagna, Federico Manuel
+Rodríguez Brizi, Manuel
