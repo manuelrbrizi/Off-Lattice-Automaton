@@ -17,6 +17,7 @@ public class ParserImpl implements Parser {
     private double M;
     private int N;
     private double Rc;
+    private double Nu;
 
     public ParserImpl(){
         this.particles = new ArrayList<Particle>();
@@ -49,31 +50,30 @@ public class ParserImpl implements Parser {
     public void parse() {
         try {
 
-            File staticFile = new File("static.txt");
-            Scanner staticReader = new Scanner(staticFile);
-            File dynamicFile = new File("dynamic.txt");
 
-            Scanner dynamicReader = new Scanner(dynamicFile);
+            File inputFile = new File("input.txt");
 
-            N = staticReader.nextInt();
-            L = staticReader.nextDouble();
-            Rc = staticReader.nextDouble();
+            Scanner inputReader = new Scanner(inputFile);
 
-            //Skip time
-            dynamicReader.nextDouble();
+            N = inputReader.nextInt();
+            L = inputReader.nextDouble();
+            Rc = inputReader.nextDouble();
+            Nu = inputReader.nextDouble();
+
+
 
             int i = 0;
 
-            while(staticReader.hasNext() && dynamicReader.hasNext()){
-                Particle p = new ParticleImpl(dynamicReader.nextDouble(),dynamicReader.nextDouble(),i,dynamicReader.nextDouble(),dynamicReader.nextDouble());
+            while(inputReader.hasNext()){
+                Particle p = new ParticleImpl(inputReader.nextDouble(),inputReader.nextDouble(),i,inputReader.nextDouble(),inputReader.nextDouble());
                 particles.add(p);
                 i++;
             }
 
-//            double idealM = Rc;
-//            M = L/Math.floor(L/idealM);
+            double idealM = Rc;
+            M = L/Math.floor(L/idealM);
 
-            M =Rc;
+//            M =Rc;
 
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");

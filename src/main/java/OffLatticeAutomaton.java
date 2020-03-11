@@ -16,8 +16,11 @@ import java.util.Random;
 
 public class OffLatticeAutomaton {
     public static void main(String[] args){
-        Parser p = new ParserImpl();
-        Grid grid = fillGrid(p);
+
+        generateInputFiles(50,20,1,1,0.03);
+
+        //Parser p = new ParserImpl();
+        //Grid grid = fillGrid(p);
 
         //For cantidad de intervalos de tiempo
         //Calculamos vecinos
@@ -25,7 +28,7 @@ public class OffLatticeAutomaton {
         //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
 
 
-        CIM(grid);
+        //CIM(grid);
 
 
         // testGridCreation(grid);
@@ -335,12 +338,7 @@ public class OffLatticeAutomaton {
     }
      */
 
-    private static void generateFiles(int quantity, double L, double r, double Rc){
-        createStaticFile(quantity,L,r,Rc);
-        createDynamicFile(quantity,L);
-    }
-
-    private static void createStaticFile(int quantity, double L, double r, double Rc){
+    private static void generateInputFiles(int quantity, double L, double Rc, double Nu, double vel){
         StringBuilder sb = new StringBuilder();
         sb.append(quantity);
         sb.append("\n");
@@ -348,40 +346,30 @@ public class OffLatticeAutomaton {
         sb.append("\n");
         sb.append(Rc);
         sb.append("\n");
+        sb.append(Nu);
+        sb.append("\n");
+        Random rand = new Random();
         for (int i = 0; i < quantity; i++){
-            sb.append(r);
-            sb.append("\n");
-        }
-
-        try {
-            FileWriter myWriter = new FileWriter("static.txt");
-            myWriter.write(sb.toString());
-            myWriter.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-    }
-
-    private static void createDynamicFile(int quantity, double max){
-        StringBuilder sb = new StringBuilder();
-        sb.append("10\n");
-        Random r = new Random();
-
-        for (int i = 0; i < quantity; i++){
-            sb.append(r.nextDouble()*max);
+            sb.append(rand.nextDouble()*L);
             sb.append(" ");
-            sb.append(r.nextDouble()*max);
+            sb.append(rand.nextDouble()*L);
+            sb.append(" ");
+            sb.append(vel);
+            sb.append(" ");
+            sb.append(rand.nextDouble()* Math.PI*2);
             sb.append("\n");
         }
 
         try {
-            FileWriter myWriter = new FileWriter("dynamic.txt");
+            FileWriter myWriter = new FileWriter("input.txt");
             myWriter.write(sb.toString());
             myWriter.close();
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+
+
     }
+
 }
