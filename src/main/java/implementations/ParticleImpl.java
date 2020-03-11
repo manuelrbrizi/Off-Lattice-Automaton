@@ -100,11 +100,22 @@ public class ParticleImpl implements Particle {
         return Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
     }
 
-    public void calculateNewPosition(double timeUnit){
-        double xVelocity = getXVelocity();
-        double yVelocity = getYVelocity();
+    public void calculateNewPosition(double timeUnit, double L){
+        x += getXVelocity() * timeUnit;
+        y += getYVelocity() * timeUnit;
 
-        x += xVelocity * timeUnit;
-        y += yVelocity * timeUnit;
+        if(x > L){
+            x -= L;
+        }
+        else if(x < 0){
+            x += L;
+        }
+
+        if(y > L){
+            y -= L;
+        }
+        else if(y < 0){
+            y += L;
+        }
     }
 }

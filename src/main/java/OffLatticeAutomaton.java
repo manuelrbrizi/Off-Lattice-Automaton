@@ -34,7 +34,7 @@ public class OffLatticeAutomaton {
         generateOvitoFile(grid);
 
         //For cantidad de intervalos de tiempo
-        int TIME = 20;
+        int TIME = 50;
         for(int i = 0; i < TIME; i++) {
             //Calculamos vecinos
             CIM(grid);
@@ -46,12 +46,12 @@ public class OffLatticeAutomaton {
 
             //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
             for(Particle particle : grid.getParticles()){
-                particle.calculateNewPosition(1);
+                particle.calculateNewPosition(1, grid.getL());
                 particle.setAngle(particle.getNewAngle());
             }
 
         // testGridCreation(grid);
-        //generateOvitoFile(grid);
+        generateOvitoFile(grid);
         //generateNeighboursFile(grid);
         }
     }

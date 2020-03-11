@@ -15,7 +15,7 @@ public interface Particle {
     double getNewAngle();
     void setNewAngle(double newAngle);
     void setAngle(double angle);
-    void calculateNewPosition(double timeUnit);
+    void calculateNewPosition(double timeUnit, double L);
     double getYVelocity();
     double getXVelocity();
     int getId();
