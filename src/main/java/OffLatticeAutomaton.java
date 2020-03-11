@@ -1,4 +1,3 @@
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import implementations.CellImpl;
 import implementations.ParserImpl;
 import interfaces.Cell;
@@ -16,7 +15,7 @@ import java.util.Random;
 public class OffLatticeAutomaton {
     public static void main(String[] args){
 
-        generateInputFile(50,10,1,1,0.03);
+        //generateInputFile(50,10,1,1,0.03);
 
         Parser p = new ParserImpl();
         p.parse();
@@ -33,7 +32,7 @@ public class OffLatticeAutomaton {
 
 
         //For cantidad de intervalos de tiempo
-        int TIME = 50;
+        int TIME = 500;
         int prevCellNumber, newCellNumber;
 
         for(int i = 0; i < TIME; i++) {
@@ -48,11 +47,11 @@ public class OffLatticeAutomaton {
             //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
             for(Particle particle : grid.getParticles()){
                 prevCellNumber = calculateCellNumber(particle.getX(), particle.getY(), grid.getM(), grid.getL());
-                grid.getCells().get(prevCellNumber).getParticles().remove(particle);
                 particle.calculateNewPosition(1, grid.getL());
                 newCellNumber = calculateCellNumber(particle.getX(), particle.getY(), grid.getM(), grid.getL());
 
                 if(prevCellNumber != newCellNumber){
+                    grid.getCells().get(prevCellNumber).getParticles().remove(particle);
                     grid.getCells().get(newCellNumber).getParticles().add(particle);
                 }
 
