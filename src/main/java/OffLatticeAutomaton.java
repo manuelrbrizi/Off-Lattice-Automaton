@@ -16,7 +16,7 @@ import java.util.Random;
 public class OffLatticeAutomaton {
     public static void main(String[] args){
 
-        generateInputFile(50,20,1,1,0.03);
+        generateInputFile(50,10,1,1,0.03);
 
         Parser p = new ParserImpl();
         p.parse();
@@ -31,7 +31,6 @@ public class OffLatticeAutomaton {
         writer.print("");
         writer.close();
 
-        generateOvitoFile(grid);
 
         //For cantidad de intervalos de tiempo
         int TIME = 50;
