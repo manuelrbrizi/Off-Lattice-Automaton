@@ -8,8 +8,7 @@ import implementations.GridImpl;
 import interfaces.Grid;
 import interfaces.Particle;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -22,6 +21,15 @@ public class OffLatticeAutomaton {
         Parser p = new ParserImpl();
         p.parse();
         Grid grid = fillGrid(p);
+
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter("outputOVITO.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        writer.print("");
+        writer.close();
 
         generateOvitoFile(grid);
 
@@ -296,16 +304,26 @@ public class OffLatticeAutomaton {
             sb.append(p.getYVelocity());
             sb.append("\n");
         }
-        sb.deleteCharAt(sb.lastIndexOf("\n"));
 
         try {
-            FileWriter myWriter = new FileWriter("outputOVITO.txt");
-            myWriter.write(sb.toString());
-            myWriter.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+
+            // Open given file in append mode.
+            BufferedWriter out = new BufferedWriter(
+                    new FileWriter("outputOVITO.txt", true));
+            out.write(sb.toString());
+            out.close();
         }
+        catch (IOException e) {
+            System.out.println("exception occoured" + e);
+        }
+//        try {
+//            FileWriter myWriter = new FileWriter("outputOVITO.txt");
+//            myWriter.write(sb.toString());
+//            myWriter.close();
+//        } catch (IOException e) {
+//            System.out.println("An error occurred.");
+//            e.printStackTrace();
+//        }
 
     }
 /*
