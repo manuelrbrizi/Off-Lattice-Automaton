@@ -7,10 +7,14 @@ public interface Particle {
 
     double calculateDistance(Particle p);
     double calculatePeriodicDistance(Particle p,double L);
-    double calculateDistance(double newX, double newY, double radius);
+    double calculateDistance(double newX, double newY);
     double getX();
     double getY();
-    double getRadius();
+    double getVelocity();
+    double getAngle();
+    double getNewAngle();
+    void setNewAngle(double newAngle);
+
     int getId();
     Set<Particle> getNeighbours();
     void setNeighbours(Set<Particle> neighbours);

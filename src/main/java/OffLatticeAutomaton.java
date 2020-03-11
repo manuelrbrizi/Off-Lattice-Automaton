@@ -14,11 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CellIndexMethod {
+public class OffLatticeAutomaton {
     public static void main(String[] args){
         Parser p = new ParserImpl();
         Grid grid = fillGrid(p);
+
+        //For cantidad de intervalos de tiempo
+        //Calculamos vecinos
+        //Cambiamos valor de NewAngle
+        //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
+
+
         CIM(grid);
+
 
         // testGridCreation(grid);
         //generateOvitoFile(grid);
@@ -223,7 +231,7 @@ public class CellIndexMethod {
 
     private static void searchForNeighbours(Particle p, List<Particle> particleList, double newX, double newY, Grid g){
         for(Particle other : particleList){
-            if(p.calculateDistance(other.getX()+newX, other.getY()+newY, other.getRadius()) < g.getRc()){
+            if(p.calculateDistance(other.getX()+newX, other.getY()+newY) < g.getRc()){
                 p.getNeighbours().add(other);
                 other.getNeighbours().add(p);
             }

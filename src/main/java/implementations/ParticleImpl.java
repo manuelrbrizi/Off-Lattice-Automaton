@@ -12,12 +12,19 @@ public class ParticleImpl implements Particle {
     private int id;
     private Set<Particle> neighbours;
 
-    public ParticleImpl(double x, double y, double radius, int id) {
+    private double velocity;
+    private double angle;
+    private double newAngle;
+
+
+    public ParticleImpl(double x, double y, int id, double velocity, double angle) {
         this.x = x;
         this.y = y;
-        this.radius = radius;
         this.id = id;
         this.neighbours = new HashSet<Particle>();
+        this.velocity = velocity;
+        this.angle = angle;
+
     }
 
     public double getX() {
@@ -28,12 +35,25 @@ public class ParticleImpl implements Particle {
         return y;
     }
 
-    public double getRadius() {
-        return radius;
-    }
 
     public int getId() {
         return id;
+    }
+
+    public double getVelocity() {
+        return velocity;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public double getNewAngle() {
+        return newAngle;
+    }
+
+    public void setNewAngle(double newAngle) {
+        this.newAngle = newAngle;
     }
 
     public Set<Particle> getNeighbours() {
@@ -46,12 +66,12 @@ public class ParticleImpl implements Particle {
 
     /* Now considering the border of the particle */
     public double calculateDistance(Particle p) {
-        double toReturn = Math.sqrt(Math.pow(p.getX()-getX(),2) + Math.pow(p.getY()-getY(),2)) - p.getRadius() - getRadius();
+        double toReturn = Math.sqrt(Math.pow(p.getX()-getX(),2) + Math.pow(p.getY()-getY(),2)) ;
         return toReturn < 0 ? 0 : toReturn;
     }
 
-    public double calculateDistance(double newX, double newY, double radius){
-        double toReturn = Math.sqrt(Math.pow(newX-getX(),2) + Math.pow(newY-getY(),2)) - radius - getRadius();
+    public double calculateDistance(double newX, double newY){
+        double toReturn = Math.sqrt(Math.pow(newX-getX(),2) + Math.pow(newY-getY(),2));
         return toReturn < 0 ? 0 : toReturn;
     }
 
@@ -66,6 +86,6 @@ public class ParticleImpl implements Particle {
             ydist = L-ydist;
         }
 
-        return Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2)) - other.getRadius() - getRadius();
+        return Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
     }
 }

@@ -65,13 +65,15 @@ public class ParserImpl implements Parser {
             int i = 0;
 
             while(staticReader.hasNext() && dynamicReader.hasNext()){
-                Particle p = new ParticleImpl(dynamicReader.nextDouble(),dynamicReader.nextDouble(),staticReader.nextDouble(),i);
+                Particle p = new ParticleImpl(dynamicReader.nextDouble(),dynamicReader.nextDouble(),i,dynamicReader.nextDouble(),dynamicReader.nextDouble());
                 particles.add(p);
                 i++;
             }
 
-            double idealM = particles.get(0).getRadius()*2 + Rc;
-            M = L/Math.floor(L/idealM);
+//            double idealM = Rc;
+//            M = L/Math.floor(L/idealM);
+
+            M =Rc;
 
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
