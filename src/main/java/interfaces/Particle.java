@@ -14,7 +14,10 @@ public interface Particle {
     double getAngle();
     double getNewAngle();
     void setNewAngle(double newAngle);
-
+    void setAngle(double angle);
+    void calculateNewPosition(double timeUnit);
+    double getYVelocity();
+    double getXVelocity();
     int getId();
     Set<Particle> getNeighbours();
     void setNeighbours(Set<Particle> neighbours);

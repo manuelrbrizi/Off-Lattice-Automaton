@@ -35,7 +35,6 @@ public class ParticleImpl implements Particle {
         return y;
     }
 
-
     public int getId() {
         return id;
     }
@@ -48,6 +47,10 @@ public class ParticleImpl implements Particle {
         return angle;
     }
 
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
     public double getNewAngle() {
         return newAngle;
     }
@@ -58,6 +61,14 @@ public class ParticleImpl implements Particle {
 
     public Set<Particle> getNeighbours() {
         return neighbours;
+    }
+
+    public double getXVelocity(){
+        return velocity * Math.cos(newAngle);
+    }
+
+    public double getYVelocity(){
+        return velocity * Math.sin(newAngle);
     }
 
     public void setNeighbours(Set<Particle> neighbours) {
@@ -87,5 +98,13 @@ public class ParticleImpl implements Particle {
         }
 
         return Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
+    }
+
+    public void calculateNewPosition(double timeUnit){
+        double xVelocity = getXVelocity();
+        double yVelocity = getYVelocity();
+
+        x += xVelocity * timeUnit;
+        y += yVelocity * timeUnit;
     }
 }

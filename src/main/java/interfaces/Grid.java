@@ -10,4 +10,5 @@ public interface Grid {
 
     void setM(double newm);
     List<Cell> getCells();
+    List<Particle> getParticles();
 }

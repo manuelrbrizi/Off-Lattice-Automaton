@@ -2,6 +2,7 @@ package implementations;
 
 import interfaces.Cell;
 import interfaces.Grid;
+import interfaces.Particle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,5 +43,13 @@ public class GridImpl implements Grid {
 
     public void setM(double newm){
         this.M = newm;
+    }
+
+    public List<Particle> getParticles(){
+        List<Particle> particles = new ArrayList<Particle>();
+        for(Cell c : cells){
+            particles.addAll(c.getParticles());
+        }
+        return particles;
     }
 }

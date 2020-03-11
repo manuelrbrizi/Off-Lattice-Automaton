@@ -1,6 +1,5 @@
 import implementations.CellImpl;
 import implementations.ParserImpl;
-import implementations.ParticleImpl;
 import interfaces.Cell;
 import interfaces.Parser;
 
@@ -17,26 +16,49 @@ import java.util.Random;
 public class OffLatticeAutomaton {
     public static void main(String[] args){
 
-        generateInputFiles(50,20,1,1,0.03);
+        //generateInputFiles(50,20,1,1,0.03);
 
-        //Parser p = new ParserImpl();
-        //Grid grid = fillGrid(p);
+        Parser p = new ParserImpl();
+        Grid grid = fillGrid(p);
 
         //For cantidad de intervalos de tiempo
-        //Calculamos vecinos
-        //Cambiamos valor de NewAngle
-        //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
+        int TIME = 20;
+        for(int i = 0; i < TIME; i++) {
+            //Calculamos vecinos
+            CIM(grid);
 
+            //Cambiamos valor de NewAngle
+            for (Particle particle : grid.getParticles()) {
+                particle.setNewAngle(calculateNewAngle(particle));
+            }
 
-        //CIM(grid);
+            //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
+            for(Particle particle : grid.getParticles()){
+                particle.calculateNewPosition(1);
+                particle.setAngle(particle.getNewAngle());
+            }
 
 
         // testGridCreation(grid);
         //generateOvitoFile(grid);
         //generateNeighboursFile(grid);
+        }
     }
 
+    private static double calculateNewAngle(Particle p){
+        double cos = Math.cos(p.getAngle());
+        double sin = Math.sin(p.getAngle());
 
+        for(Particle other : p.getNeighbours()){
+            cos += Math.cos(other.getAngle());
+            sin += Math.sin(other.getAngle());
+        }
+
+        cos = cos/p.getNeighbours().size();
+        sin = sin/p.getNeighbours().size();
+
+        return Math.atan2(sin, cos);
+    }
 
     private static Grid fillGrid(Parser parser){
         double L = parser.getL();
@@ -57,7 +79,6 @@ public class OffLatticeAutomaton {
                 yCellPosition++;
                 cell = new CellImpl(xCellPosition, yCellPosition);
                 cellList.add(cell);
-                //System.out.println(String.format("Putting X = %d, Y = %d, I = %d\n", xCellPosition, yCellPosition, i));
             }
             else{
                 xCellPosition++;
@@ -73,9 +94,6 @@ public class OffLatticeAutomaton {
         for(int i = 0; i < N; i++){
             p = particles.get(i);
             cellNumber = calculateCellNumber(p.getX(), p.getY(), M, L);
-            if(cellNumber == 172){
-                System.out.printf("x/M = %f, y/M = %f, L/M = %f, (int)L/M = %d\n", p.getX()/M, p.getY()/M, L/M, (int)(L/M));
-            }
             cellList.get(cellNumber).addParticle(p);
         }
 
