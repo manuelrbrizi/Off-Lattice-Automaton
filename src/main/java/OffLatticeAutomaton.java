@@ -34,6 +34,8 @@ public class OffLatticeAutomaton {
 
         //For cantidad de intervalos de tiempo
         int TIME = 50;
+        int prevCellNumber, newCellNumber;
+
         for(int i = 0; i < TIME; i++) {
             //Calculamos vecinos
             CIM(grid);
@@ -45,7 +47,15 @@ public class OffLatticeAutomaton {
 
             //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
             for(Particle particle : grid.getParticles()){
+                prevCellNumber = calculateCellNumber(particle.getX(), particle.getY(), grid.getM(), grid.getL());
+                grid.getCells().get(prevCellNumber).getParticles().remove(particle);
                 particle.calculateNewPosition(1, grid.getL());
+                newCellNumber = calculateCellNumber(particle.getX(), particle.getY(), grid.getM(), grid.getL());
+
+                if(prevCellNumber != newCellNumber){
+                    grid.getCells().get(newCellNumber).getParticles().add(particle);
+                }
+
                 particle.setAngle(particle.getNewAngle());
             }
 
