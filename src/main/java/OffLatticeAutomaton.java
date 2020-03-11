@@ -1,3 +1,4 @@
+import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import implementations.CellImpl;
 import implementations.ParserImpl;
 import interfaces.Cell;
@@ -16,10 +17,13 @@ import java.util.Random;
 public class OffLatticeAutomaton {
     public static void main(String[] args){
 
-        //generateInputFiles(50,20,1,1,0.03);
+        generateInputFile(50,20,1,1,0.03);
 
         Parser p = new ParserImpl();
+        p.parse();
         Grid grid = fillGrid(p);
+
+        generateOvitoFile(grid);
 
         //For cantidad de intervalos de tiempo
         int TIME = 20;
@@ -37,7 +41,6 @@ public class OffLatticeAutomaton {
                 particle.calculateNewPosition(1);
                 particle.setAngle(particle.getNewAngle());
             }
-
 
         // testGridCreation(grid);
         //generateOvitoFile(grid);
@@ -274,42 +277,24 @@ public class OffLatticeAutomaton {
 
     //PREVIOUS METHODS. WILL BE DELETED SOON
 
-    /*
+
     private static void generateOvitoFile(Grid grid){
-        List<Particle> particles = new ArrayList<Particle>();
 
-        for(Cell c : grid.getCells()){
-            particles.addAll(c.getParticles());
-        }
-
-        Particle chosen = new ParticleImpl();
-        for(Particle p : particles) {
-            if (p.getId() == selectedParticle) {
-                chosen = p;
-            }
-        }
-        int red,green,blue;
 
         StringBuilder sb = new StringBuilder();
-        sb.append(particles.size());
-        sb.append("\n\n");
+        sb.append(grid.getParticles().size());
+        sb.append("\n");
+        sb.append("\n");
 
-        for(Particle p : particles){
-            if(p.getId() == selectedParticle){
-                red = 0;
-                green = 255;
-                blue = 0;
-            }
-            else if(chosen.getNeighbours().contains(p)){
-                red = 255;
-                green = 0;
-                blue = 0;            }
-            else{
-                red = 0;
-                green = 0;
-                blue = 255;            }
-            sb.append(String.format("%f\t%f\t%f\t%d\t%d\t%d\n",p.getX(),p.getY(),p.getRadius(),red,green,blue));
-
+        for (Particle p: grid.getParticles()){
+            sb.append(p.getX());
+            sb.append("\t");
+            sb.append(p.getY());
+            sb.append("\t");
+            sb.append(p.getXVelocity());
+            sb.append("\t");
+            sb.append(p.getYVelocity());
+            sb.append("\n");
         }
         sb.deleteCharAt(sb.lastIndexOf("\n"));
 
@@ -323,7 +308,7 @@ public class OffLatticeAutomaton {
         }
 
     }
-
+/*
     private static void generateNeighboursFile(Grid grid) {
 
         List<Particle> particles = new ArrayList<Particle>();
@@ -356,7 +341,7 @@ public class OffLatticeAutomaton {
     }
      */
 
-    private static void generateInputFiles(int quantity, double L, double Rc, double Nu, double vel){
+    private static void generateInputFile(int quantity, double L, double Rc, double Nu, double vel){
         StringBuilder sb = new StringBuilder();
         sb.append(quantity);
         sb.append("\n");
