@@ -35,6 +35,10 @@ public class ParserImpl implements Parser {
         return Rc;
     }
 
+    public double getNu() {
+        return Nu;
+    }
+
     public double getM() {
         return M;
     }

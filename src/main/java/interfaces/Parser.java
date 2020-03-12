@@ -9,5 +9,6 @@ public interface Parser {
     int getN();
     void setM(double m);
     double getRc();
+    double getNu();
     List<Particle> getParticles();
 }

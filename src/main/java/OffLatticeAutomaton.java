@@ -15,7 +15,7 @@ import java.util.Random;
 public class OffLatticeAutomaton {
     public static void main(String[] args){
 
-        //generateInputFile(50,10,1,1,0.03);
+        generateInputFile(300,7,0.2,2,0.03);
 
         Parser p = new ParserImpl();
         p.parse();
@@ -34,14 +34,21 @@ public class OffLatticeAutomaton {
         //For cantidad de intervalos de tiempo
         int TIME = 500;
         int prevCellNumber, newCellNumber;
+        double random;
 
         for(int i = 0; i < TIME; i++) {
+            //Sacamos los vecinos previos
+            for(Particle particle : grid.getParticles()){
+                particle.getNeighbours().clear();
+            }
+
             //Calculamos vecinos
             CIM(grid);
 
             //Cambiamos valor de NewAngle
             for (Particle particle : grid.getParticles()) {
-                particle.setNewAngle(calculateNewAngle(particle));
+                random = Math.random()*(2)-1;
+                particle.setNewAngle(calculateNewAngle(particle, random * p.getNu()%(p.getNu()/2)));
             }
 
             //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
@@ -64,7 +71,7 @@ public class OffLatticeAutomaton {
         }
     }
 
-    private static double calculateNewAngle(Particle p){
+    private static double calculateNewAngle(Particle p, double nu){
         double cos = Math.cos(p.getAngle());
         double sin = Math.sin(p.getAngle());
 
@@ -76,7 +83,7 @@ public class OffLatticeAutomaton {
         cos = cos/p.getNeighbours().size();
         sin = sin/p.getNeighbours().size();
 
-        return Math.atan2(sin, cos);
+        return Math.atan2(sin, cos) + nu;
     }
 
     private static Grid fillGrid(Parser parser){
@@ -310,6 +317,9 @@ public class OffLatticeAutomaton {
             sb.append(p.getXVelocity());
             sb.append("\t");
             sb.append(p.getYVelocity());
+            sb.append("\t");
+            sb.append(0.03);
+
             sb.append("\n");
         }
 
