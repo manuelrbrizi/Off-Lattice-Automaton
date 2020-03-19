@@ -7,6 +7,7 @@ import implementations.GridImpl;
 import interfaces.Grid;
 import interfaces.Particle;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Random;
 public class OffLatticeAutomaton {
     public static void main(String[] args){
 
-        generateInputFile(300,7,0.2,2,0.03);
+        generateInputFile(300,5,1,0.1,0.03);
 
         Parser p = new ParserImpl();
         p.parse();
@@ -29,7 +30,6 @@ public class OffLatticeAutomaton {
         }
         writer.print("");
         writer.close();
-
 
         //For cantidad de intervalos de tiempo
         int TIME = 500;
@@ -47,8 +47,8 @@ public class OffLatticeAutomaton {
 
             //Cambiamos valor de NewAngle
             for (Particle particle : grid.getParticles()) {
-                random = Math.random()*(2)-1;
-                particle.setNewAngle(calculateNewAngle(particle, random * p.getNu()%(p.getNu()/2)));
+                random = Math.random()*(p.getNu())-(p.getNu()/2);
+                particle.setNewAngle(calculateNewAngle(particle, random));
             }
 
             //Cambiamos valor de posicion y switcheamos ponemos NewAngle en Angle (OJO con condiciones periodicas)
@@ -80,8 +80,8 @@ public class OffLatticeAutomaton {
             sin += Math.sin(other.getAngle());
         }
 
-        cos = cos/p.getNeighbours().size();
-        sin = sin/p.getNeighbours().size();
+        cos = cos/(p.getNeighbours().size()+1);
+        sin = sin/(p.getNeighbours().size()+1);
 
         return Math.atan2(sin, cos) + nu;
     }
@@ -319,7 +319,20 @@ public class OffLatticeAutomaton {
             sb.append(p.getYVelocity());
             sb.append("\t");
             sb.append(0.03);
+            sb.append("\t");
 
+            Color color = Color.getHSBColor((float) p.getNewAngle(),1F,1F);
+            //sb.append(color.getRed());
+            double red = Math.abs(((p.getNewAngle())%(2*Math.PI))/(Math.PI*2));
+            double blue = 1 - red;
+            double green = 0.5 * red;
+            sb.append(red);
+            sb.append("\t");
+            //sb.append(color.getGreen());
+            sb.append(blue);
+            sb.append("\t");
+            //sb.append(color.getBlue());
+            //sb.append(green);
             sb.append("\n");
         }
 
